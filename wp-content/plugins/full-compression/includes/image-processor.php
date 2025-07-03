@@ -1,7 +1,8 @@
 <?php
 add_filter('wp_handle_upload', 'fc_convert_image_format');
 
-function fc_convert_image_format($upload) {
+function fc_convert_image_format($upload)
+{
     $format = get_option('fc_image_format', 'webp');
 
     $file_path = $upload['file'];
@@ -31,18 +32,34 @@ function fc_convert_image_format($upload) {
     if (!$image) return $upload;
 
     $new_path = preg_replace('/\.(jpe?g|png|webp)$/i', '.' . $format, $file_path);
+    $success = false;
 
-    switch ($format) {
-        case 'jpg':
-        case 'jpeg':
-            imagejpeg($image, $new_path, 85);
-            break;
-        case 'png':
-            imagepng($image, $new_path, 6);
-            break;
-        case 'webp':
-            imagewebp($image, $new_path, 80);
-            break;
+    if (extension_loaded('imagick')) {
+        try {
+            $imagick = new Imagick($file_path);
+            $imagick->setImageFormat($format);
+
+            if ($format === 'jpg' || $format === 'jpeg') {
+                $imagick->setImageCompression(Imagick::COMPRESSION_JPEG);
+                $imagick->setImageCompressionQuality(65); // 0-100
+            } elseif ($format === 'png') {
+                // PNG è lossless, quindi meno compressione possibile
+                $imagick->setImageCompression(Imagick::COMPRESSION_ZIP);
+                $imagick->setImageCompressionQuality(80); // Ha effetto parziale
+            } elseif ($format === 'webp') {
+                $imagick->setImageCompressionQuality(60);
+            }
+
+            $imagick->stripImage(); // Rimuove metadati (EXIF, ICC, GPS)
+            $imagick->writeImage($new_path);
+            $imagick->destroy();
+            $success = true;
+        } catch (Exception $e) {
+            error_log('Errore Imagick: ' . $e->getMessage());
+        }
+    } else {
+        // fallback se Imagick non disponibile (opzionale)
+        // oppure lascia vuoto
     }
 
     imagedestroy($image);

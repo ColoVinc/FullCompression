@@ -1,11 +1,13 @@
 <?php
 function fc_add_admin_menu() {
-    add_options_page(
+    add_menu_page(
         'FullCompression',
         'FullCompression',
         'manage_options',
         'fullcompression',
-        'fc_options_page_html'
+        'fc_options_page_html',
+        'dashicons-format-image',
+        10
     );
 }
 add_action('admin_menu', 'fc_add_admin_menu');

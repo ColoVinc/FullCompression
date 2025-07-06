@@ -4,6 +4,7 @@
  * Description: Comprimi e converti automaticamente le immagini caricate su WordPress.
  * Version: 1.0.0
  * Author: Vincenzo Colonna
+ * Domain Path: /languages
  */
 
 if (!defined('ABSPATH')) {

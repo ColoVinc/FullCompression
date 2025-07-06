@@ -8,7 +8,7 @@ function fc_convert_image_format($upload)
     if ($enabled !== '1') {
         return $upload;
     }
-    
+
     $format = get_option('fc_image_format', 'webp');
 
     $file_path = $upload['file'];
@@ -61,7 +61,7 @@ function fc_convert_image_format($upload)
             $imagick->destroy();
             $success = true;
         } catch (Exception $e) {
-            error_log('Errore Imagick: ' . $e->getMessage());
+            // error_log('Errore Imagick: ' . $e->getMessage(), E_USER_WARNING);
         }
     } else {
         // fallback se Imagick non disponibile (opzionale)
@@ -71,7 +71,7 @@ function fc_convert_image_format($upload)
     imagedestroy($image);
 
     // Elimina file originale e aggiorna percorso
-    unlink($file_path);
+    wp_delete_file($file_path);
     $upload['file'] = $new_path;
     $upload['url'] = str_replace(basename($upload['url']), basename($new_path), $upload['url']);
     $upload['type'] = mime_content_type($new_path);

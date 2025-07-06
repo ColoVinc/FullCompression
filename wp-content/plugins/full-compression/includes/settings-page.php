@@ -31,7 +31,7 @@ function fc_register_settings()
 
     add_settings_field(
         'fc_image_format',
-        __('Formato immagine desiderato', 'fullcompression'),
+        __('Formato immagine desiderato', 'full-compression'),
         'fc_image_format_field_html',
         'fullcompression',
         'fc_settings_section'
@@ -39,7 +39,7 @@ function fc_register_settings()
 
     add_settings_field(
         'fc_enable_compression',
-        __('Abilita/Disattiva compressione', 'fullcompression'),
+        __('Abilita/Disattiva compressione', 'full-compression'),
         'fc_enable_compression_field_html',
         'fullcompression',
         'fc_settings_section'

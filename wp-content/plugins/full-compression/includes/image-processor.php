@@ -3,6 +3,12 @@ add_filter('wp_handle_upload', 'fc_convert_image_format');
 
 function fc_convert_image_format($upload)
 {
+    $enabled = get_option('fc_enable_compression', '1');
+
+    if ($enabled !== '1') {
+        return $upload;
+    }
+    
     $format = get_option('fc_image_format', 'webp');
 
     $file_path = $upload['file'];
